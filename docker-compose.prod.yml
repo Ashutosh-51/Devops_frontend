@@ -1,0 +1,9 @@
+services:
+  app:
+    container_name: frontend
+    image: ashu51/frontend:${BUILD}
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+        - "80:80"
