@@ -1,10 +1,10 @@
 pipeline {
-    agent { label 'frontend' }
+    agent {}
 
     environment {
         IMAGE_TAG = "ashu51/frontend"
         CONTAINER_NAME = "frontend"
-        REGISTRY_CREDS = credentials('registry-credentials-for-jenkins')
+        // REGISTRY_CREDS = credentials('registry-credentials-for-jenkins')
     }
 
     stages {
@@ -25,14 +25,25 @@ pipeline {
             }
         }
 
-        stage('Deploy')
+        stage('Deploy') {
             steps { 
-                sh 'docker stop $CONTAINER_NAME || true'
-    
-                sh 'docker rm $CONTAINER_NAME || true'
-            
-                sh 'BUILD=${BUILD_ID} docker-compose -f docker-compose.prod.yml up -d'
+                sh '''
+                    docker stop $CONTAINER_NAME || true
+                    docker rm $CONTAINER_NAME || true
+                    BUILD=${BUILD_ID} docker-compose -f docker-compose.prod.yml up -d
+                '''
+            }
         }
+
+        // stage('Deploy') {
+        //     steps { 
+        //         sh 'docker stop $CONTAINER_NAME || true'
+    
+        //         sh 'docker rm $CONTAINER_NAME || true'
+            
+        //         sh 'BUILD=${BUILD_ID} docker-compose -f docker-compose.prod.yml up -d'
+        //     }
+        // }
 
         stage('Clean up') {
             steps {
