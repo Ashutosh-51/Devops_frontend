@@ -1,5 +1,5 @@
 pipeline {
-    agent {any}
+    agent { any }
 
     environment {
         IMAGE_TAG = "ashu51/frontend"
@@ -17,16 +17,18 @@ pipeline {
 
         stage('Push') {
             steps {
-                sh '''
-                    docker login -u $REGISTRY_CREDS_USR -P $REGISTRY_CREDS_PSW
-                    docker tag $IMAGE_TAG:$BUILD_ID $REGISTRY_VREDS_USR/$IMAGE_TAG:$BUILD_ID
-                    docker push $REGISTRY_CREDS_USR/$IMAGE_TAG:$BUILD_ID
-                '''
+                withCredentials([usernamePassword(credentialsId: 'registry-credentials-for-jenkins', passwordVariable: 'REGISTRY_CREDS_PSW', usernameVariable: 'REGISTRY_CREDS_USR')]) {
+                    sh '''
+                        docker login -u $REGISTRY_CREDS_USR -p $REGISTRY_CREDS_PSW
+                        docker tag $IMAGE_TAG:$BUILD_ID $REGISTRY_CREDS_USR/$IMAGE_TAG:$BUILD_ID
+                        docker push $REGISTRY_CREDS_USR/$IMAGE_TAG:$BUILD_ID
+                    '''
+                }
             }
         }
 
         stage('Deploy') {
-            steps { 
+            steps {
                 sh '''
                     docker stop $CONTAINER_NAME || true
                     docker rm $CONTAINER_NAME || true
@@ -34,16 +36,6 @@ pipeline {
                 '''
             }
         }
-
-        // stage('Deploy') {
-        //     steps { 
-        //         sh 'docker stop $CONTAINER_NAME || true'
-    
-        //         sh 'docker rm $CONTAINER_NAME || true'
-            
-        //         sh 'BUILD=${BUILD_ID} docker-compose -f docker-compose.prod.yml up -d'
-        //     }
-        // }
 
         stage('Clean up') {
             steps {
