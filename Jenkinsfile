@@ -1,5 +1,5 @@
 pipeline {
-    agent { any }
+    agent any 
 
     environment {
         IMAGE_TAG = "ashu51/frontend"
