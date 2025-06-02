@@ -20,7 +20,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'registry-credentials-for-jenkins', passwordVariable: 'REGISTRY_CREDS_PSW', usernameVariable: 'REGISTRY_CREDS_USR')]) {
                     sh '''
                         docker login -u $REGISTRY_CREDS_USR -p $REGISTRY_CREDS_PSW
-                        docker tag $IMAGE_TAG:$BUILD_ID $REGISTRY_CREDS_USR/$IMAGE_TAG:$BUILD_ID
+                        docker tag $IMAGE_TAG:$BUILD_ID $IMAGE_TAG:$BUILD_ID
                         docker push $REGISTRY_CREDS_USR/$IMAGE_TAG:$BUILD_ID
                     '''
                 }
