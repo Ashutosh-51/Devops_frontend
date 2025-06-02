@@ -21,7 +21,7 @@ pipeline {
                     sh '''
                         docker login -u $REGISTRY_CREDS_USR -p $REGISTRY_CREDS_PSW
                         docker tag $IMAGE_TAG:$BUILD_ID $IMAGE_TAG:$BUILD_ID
-                        docker push $REGISTRY_CREDS_USR/$IMAGE_TAG:$BUILD_ID
+                        docker push $IMAGE_TAG:$BUILD_ID
                     '''
                 }
             }
