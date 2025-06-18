@@ -18,6 +18,32 @@ pipeline {
             }
         }
 
+        stage('Scan with Prisma Cloud') {
+            steps {
+                sh '''
+                twistcli images scan \
+                    --address $PRISMA_CONSOLE \
+                    --user $PRISMA_USER \
+                    --password $PRISMA_PASSWORD \
+                    --details \
+                    --output-file results.json \
+                    $IMAGE_NAME
+                '''
+            }
+            }
+
+            stage('Evaluate Results') {
+            steps {
+                sh '''
+                if grep -q "vulnerabilities" results.json; then
+                    echo "Scan complete. Check report."
+                else
+                    echo "No vulnerabilities found."
+                fi
+                '''
+            }
+            }
+
         stage('Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '  ', passwordVariable: 'REGISTRY_CREDS_PSW', usernameVariable: 'REGISTRY_CREDS_USR')]) {
