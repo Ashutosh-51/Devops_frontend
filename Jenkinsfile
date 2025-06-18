@@ -15,15 +15,25 @@ pipeline {
         }
 
         stage('Download twistcli') {
-            steps {
+            steps { 
                 withCredentials([usernamePassword(credentialsId: 'prisma-access-key', usernameVariable: 'PRISMA_USER', passwordVariable: 'PRISMA_PASSWORD')]) {
                     sh '''
                         curl -u $PRISMA_USER:$PRISMA_PASSWORD -o twistcli "$PRISMA_CONSOLE/api/v1/util/twistcli"
                         chmod +x twistcli
+
+                        # Validate binary - check it's ELF (Linux binary)
+                        if file twistcli | grep -q 'ELF'; then
+                            echo "twistcli downloaded successfully."
+                        else
+                            echo "Error: twistcli is not a valid binary."
+                            cat twistcli  # show contents (likely HTML error)
+                            exit 1
+                        fi
                     '''
                 }
             }
         }
+
 
         stage('Scan with Prisma Cloud') {
             steps {
