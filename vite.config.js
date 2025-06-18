@@ -8,25 +8,25 @@ export default defineConfig({
     port: 8080,
     proxy: {
       '/api': {
-        target: 'https://2361-114-143-110-34.ngrok-free.app/api/v1',
+        target: 'http://10.10.1.24:8000/api/v1',
         changeOrigin: true,
         secure: false,
         withCredentials: true
       },
       '/whoami': {
-        target: 'https://2361-114-143-110-34.ngrok-free.app/',
+        target: 'http://10.10.1.24:8000/',
         changeOrigin: true,
         secure: false,
         withCredentials: true
       },
       '/login': {
-        target: 'https://2361-114-143-110-34.ngrok-free.app/',
+        target: 'http://10.10.1.24:8000/',
         changeOrigin: true,
         secure: false,
         withCredentials: true
       },
       '/logout': {
-        target: 'https://2361-114-143-110-34.ngrok-free.app/',
+        target: '10.10.1.24:8000/',
         changeOrigin: true,
         secure: false,
         withCredentials: true
