@@ -16,12 +16,12 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url: 'https://github.com/Ashutosh-51/Devops_frontend'
-                stash includes: '**/*', name: 'source'
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         git branch: 'master', url: 'https://github.com/Ashutosh-51/Devops_frontend'
+        //         stash includes: '**/*', name: 'source'
+        //     }
+        // }
 
         stage('Checkov') {
             steps {
