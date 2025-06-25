@@ -4,33 +4,34 @@ pipeline {
     environment {
         IMAGE_TAG = "ashu51/frontend"
         CONTAINER_NAME = "frontend"
-        // REGISTRY_CREDS = credentials('registry-credentials-for-jenkins')
-        PRISMA_API_URL="https://api.ind.prismacloud.io"
+        PRISMA_API_URL = "https://api.ind.prismacloud.io"
     }
 
     stages {
-        
+
         stage('Build') {
             steps {
-                sh 'BUILD=${BUILD_ID} docker-compose -f docker-compose.prod.yml build'
+                sh '''
+                    BUILD=${BUILD_ID} docker-compose -f docker-compose.prod.yml build
+                '''
             }
         }
-
-        // stage('Checkout') {
-        //     steps {
-        //         git branch: 'master', url: 'https://github.com/Ashutosh-51/Devops_frontend'
-        //         stash includes: '**/*', name: 'source'
-        //     }
-        // }
 
         stage('Checkov') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Prisma', usernameVariable: 'pc_user', passwordVariable: 'pc_password')]) {
                     script {
                         docker.image('bridgecrew/checkov:latest').inside("--entrypoint=''") {
-                            unstash 'source'
                             try {
-                                sh 'checkov -d . --use-enforcement-rules -o cli -o junitxml --output-file-path console,results.xml --bc-api-key ${pc_user}::${pc_password} --repo-id  Ashutosh-51/Devops_frontend --branch master'
+                                sh '''
+                                    checkov -d . \
+                                    --use-enforcement-rules \
+                                    -o cli -o junitxml \
+                                    --output-file-path console,results.xml \
+                                    --bc-api-key ${pc_user}::${pc_password} \
+                                    --repo-id Ashutosh-51/Devops_frontend \
+                                    --branch master
+                                '''
                                 junit skipPublishingChecks: true, testResults: 'results.xml'
                             } catch (err) {
                                 junit skipPublishingChecks: true, testResults: 'results.xml'
@@ -46,9 +47,10 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'registry-credentials-for-jenkins', passwordVariable: 'REGISTRY_CREDS_PSW', usernameVariable: 'REGISTRY_CREDS_USR')]) {
                     sh '''
-                        docker login -u $REGISTRY_CREDS_USR -p $REGISTRY_CREDS_PSW
+                        echo "$REGISTRY_CREDS_PSW" | docker login -u "$REGISTRY_CREDS_USR" --password-stdin
                         docker tag $IMAGE_TAG:$BUILD_ID $IMAGE_TAG:$BUILD_ID
                         docker push $IMAGE_TAG:$BUILD_ID
+                        docker logout
                     '''
                 }
             }
