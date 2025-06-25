@@ -30,7 +30,7 @@ pipeline {
                         docker.image('bridgecrew/checkov:latest').inside("--entrypoint=''") {
                             unstash 'source'
                             try {
-                                sh 'checkov -d . --use-enforcement-rules -o cli -o junitxml --output-file-path console,results.xml --bc-api-key ${pc_user}::${pc_password} --repo-id  Invecto-technologies-pvt-ltd/portal-jenkins --branch main'
+                                sh 'checkov -d . --use-enforcement-rules -o cli -o junitxml --output-file-path console,results.xml --bc-api-key ${pc_user}::${pc_password} --repo-id  Ashutosh-51/Devops_frontend --branch master'
                                 junit skipPublishingChecks: true, testResults: 'results.xml'
                             } catch (err) {
                                 junit skipPublishingChecks: true, testResults: 'results.xml'
