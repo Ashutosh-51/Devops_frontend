@@ -47,13 +47,28 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'prisma-access-key', usernameVariable: 'PC_USER', passwordVariable: 'PC_PASSWORD')]) {
                     sh '''
-                        echo "[INFO] Scanning image with twistcli..."
+                        echo "[INFO] Downloading twistcli binary from Prisma Cloud..."
+                        curl -k -u "$PC_USER:$PC_PASSWORD" \
+                        -o twistcli \
+                        https://asia-south1.cloud.twistlock.com/india-1131958783/api/v1/util/twistcli
+
+                        echo "[INFO] Validating twistcli binary..."
+                        file twistcli | grep ELF > /dev/null || {
+                        echo "[ERROR] twistcli is not a valid binary. Contents:"
+                        cat twistcli
+                        exit 1
+                        }
+
+                        chmod +x twistcli
+
+                        echo "[INFO] Running image scan..."
                         ./twistcli images scan \
                         --address https://asia-south1.cloud.twistlock.com/india-1131958783 \
                         --user "$PC_USER" \
                         --password "$PC_PASSWORD" \
-                        ashu51/frontend:$BUILD_ID
+                        ashu51/frontend:9
                     '''
+                    archiveArtifacts artifacts: 'scan-report.json', onlyIfSuccessful: true
                 }
             }
         }
