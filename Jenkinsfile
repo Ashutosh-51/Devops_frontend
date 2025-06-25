@@ -49,7 +49,7 @@ pipeline {
                     sh '''
                         echo "[INFO] Scanning image with twistcli..."
                         ./twistcli images scan \
-                        --address $TWISTCLI_CONSOLE \
+                        --address https://asia-south1.cloud.twistlock.com/india-1131958783 \
                         --user "$PC_USER" \
                         --password "$PC_PASSWORD" \
                         --details \
