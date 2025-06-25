@@ -68,7 +68,6 @@ pipeline {
                         --password "$PC_PASSWORD" \
                         ashu51/frontend:9
                     '''
-                    archiveArtifacts artifacts: 'scan-report.json', onlyIfSuccessful: true
                 }
             }
         }
