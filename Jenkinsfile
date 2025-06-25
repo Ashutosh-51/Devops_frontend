@@ -48,16 +48,12 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'prisma-access-key', usernameVariable: 'PC_USER', passwordVariable: 'PC_PASSWORD')]) {
                     sh '''
                         echo "[INFO] Scanning image with twistcli..."
-                        ./twistcli images scan --address https://asia-south1.cloud.twistlock.com/india-1131958783 \
+                        ./twistcli images scan \
+                        --address https://asia-south1.cloud.twistlock.com/india-1131958783 \
                         --user "$PC_USER" \
                         --password "$PC_PASSWORD" \
-                        --details \
-                        --output-file scan-report.json \
-                        ashu51/frontend:9
-
-                        echo "[INFO] Archiving scan report..."
+                        ashu51/frontend:$BUILD_ID
                     '''
-                    archiveArtifacts artifacts: 'scan-report.json', onlyIfSuccessful: true
                 }
             }
         }
