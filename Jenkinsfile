@@ -42,14 +42,10 @@ pipeline {
                 }
             }
         }
-        options {
-            preserveStashes()
-            timestamps()
-        }
 
         stage('Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '  ', passwordVariable: 'REGISTRY_CREDS_PSW', usernameVariable: 'REGISTRY_CREDS_USR')]) {
+                withCredentials([usernamePassword(credentialsId: 'registry-credentials-for-jenkins', passwordVariable: 'REGISTRY_CREDS_PSW', usernameVariable: 'REGISTRY_CREDS_USR')]) {
                     sh '''
                         docker login -u $REGISTRY_CREDS_USR -p $REGISTRY_CREDS_PSW
                         docker tag $IMAGE_TAG:$BUILD_ID $IMAGE_TAG:$BUILD_ID
