@@ -18,7 +18,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Invecto-technologies-pvt-ltd/portal-jenkins'
+                git branch: 'main', url: 'https://github.com/Ashutosh-51/Devops_frontend'
                 stash includes: '**/*', name: 'source'
             }
         }
