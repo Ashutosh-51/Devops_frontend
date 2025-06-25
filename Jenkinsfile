@@ -40,6 +40,26 @@ pipeline {
                         }
                     }
                 }
+            }   
+        }
+
+        stage('Prisma Image Scan') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'Prisma', usernameVariable: 'PC_USER', passwordVariable: 'PC_PASSWORD')]) {
+                    sh '''
+                        echo "[INFO] Scanning image with twistcli..."
+                        ./twistcli images scan \
+                        --address $TWISTCLI_CONSOLE \
+                        --user "$PC_USER" \
+                        --password "$PC_PASSWORD" \
+                        --details \
+                        --output-file scan-report.json \
+                        $IMAGE_TAG:$BUILD_ID
+
+                        echo "[INFO] Archiving scan report..."
+                    '''
+                    archiveArtifacts artifacts: 'scan-report.json', onlyIfSuccessful: true
+                }
             }
         }
 
