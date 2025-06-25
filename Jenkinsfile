@@ -45,7 +45,7 @@ pipeline {
 
         stage('Prisma Image Scan') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'Prisma', usernameVariable: 'PC_USER', passwordVariable: 'PC_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'prisma-access-key', usernameVariable: 'PC_USER', passwordVariable: 'PC_PASSWORD')]) {
                     sh '''
                         echo "[INFO] Scanning image with twistcli..."
                         ./twistcli images scan --address https://asia-south1.cloud.twistlock.com/india-1131958783 \
